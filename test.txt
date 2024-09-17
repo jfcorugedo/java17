@@ -1,0 +1,10 @@
+int measurement = 10;
+
+int size = switch(measurement) {
+    case 5 -> 1;
+    case 10 -> (short) 2;
+    default -> 0;
+    case 20 -> "3";
+    case 40 -> 4L;
+    case 50 -> null;
+};
