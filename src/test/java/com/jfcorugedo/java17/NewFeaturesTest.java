@@ -592,6 +592,90 @@ public class NewFeaturesTest {
 
         System.out.println(new Person("María", "García", 35));
     }
+
+    /* if pattern matching */
+    @Test
+    void ifPatternMatchingBasis() {
+        Object object = 1;
+
+        // Old way
+        if(object instanceof Integer) {
+            Integer number = (Integer) object;
+            System.out.println(number.compareTo(5));
+        }
+
+        // New way (Java 16):
+        if(object instanceof Integer number) {
+            System.out.println(number.compareTo(5));
+        }
+    }
+
+    @Test
+    void ifPatternMatchingResigning() {
+        Object object = 1;
+
+        if(object instanceof Integer number) {
+            number = 10;// Bad practice
+            System.out.println(number.compareTo(5));
+        }
+
+        if(object instanceof final Integer number) {
+            // number = 10; //Does not compile
+            System.out.println(number.compareTo(5));
+        }
+    }
+
+    @Test
+    void ifPatternMatchingExpressions() {
+        Object object = 1;
+
+        if(object instanceof Integer age && age < 18) {
+            System.out.println("This user is a minor!");
+        }
+    }
+
+    @Test
+    void ifPatternMatchingMustUseSubtypes() {
+        Number number = 1;
+
+        if(number instanceof Integer age && age.compareTo(18) < 0) {
+            System.out.println("This user is a minor!");
+        }
+
+        //Do these statements compile?
+        // if(number instanceof Number other){}
+        // if(number instanceof List list) {}
+    }
+
+    @Test
+    void ifPatternMatchingFlowScoping() {
+
+        // RULE:
+        // Flow scoping means the variable is only in scope when
+        // the compiler can definitively determine its type.
+
+        Number number = 1;
+
+        //Do these code snippets compile?
+        /*
+        if(number instanceof Integer age || age.compareTo(18) < 0) {
+            System.out.println("This user is a minor!");
+        }
+        */
+
+        /*
+        if(number instanceof Integer age)
+            age.compareTo(5);
+        age.compareTo(18);
+        */
+
+        /*
+        if(!(number instanceof Integer age)) {
+            return;
+        }
+        age.compareTo(10);
+        */
+    }
 }
 
 class SuperCoolAndAwesomeIdentifierWithVeryLongNameDTO {}
