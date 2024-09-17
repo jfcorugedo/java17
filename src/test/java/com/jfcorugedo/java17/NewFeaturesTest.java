@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -448,6 +450,147 @@ public class NewFeaturesTest {
 
         //double reallyUgly = 1_____________2;
 
+    }
+
+
+    /** Records **/
+    @Test
+    void basicRecordDeclaration() {
+
+        record Person(String name, String surname, int age) {}
+
+        //All args constructor
+        var juan  = new Person("Juan", "Corugedo", 41);
+
+        //Accessor methods
+        System.out.printf("Hi! my name is %s and I'm %d years old\n", juan.name(), juan.age());
+
+        //equals and hashCode
+        var copy = new Person(juan.name(), juan.surname(), juan.age());
+        assertThat(copy).isEqualTo(juan);
+        assertThat(copy.hashCode()).isEqualTo(juan.hashCode());
+
+        //toString
+        System.out.println(juan);
+        assertThat(juan.toString()).isEqualTo("Person[name=Juan, surname=Corugedo, age=41]");
+    }
+
+    @Test
+    void recordCanBeEmpty() {
+        record Empty() {}
+
+        var pointless = new Empty();
+
+        System.out.println(pointless);
+    }
+
+    @Test
+    void recordsAreImplicitlyFinal() {
+        record MyRecord() {}
+
+        //Does it compile?
+        //record DoesItCompile() extends MyRecord{}
+
+        //Do these records compile?
+        //record MySerialDTO() implements Serializable {}
+        /*
+        record MyOtherRecord() implements Comparable<MyOtherRecord> {
+            @Override
+            public int compareTo(MyOtherRecord o) {
+                return 0;
+            }
+        }
+         */
+    }
+
+    @Test
+    void recordsLongConstructor() {
+        record Developer(String name, List<String> skills) {
+            public Developer(String name, List<String> skills) {
+                if(skills == null || skills.isEmpty()) {
+                    throw new IllegalArgumentException();
+                }
+                this.name = name; //Mandatory, since all the fields are final
+                this.skills = skills; //Mandatory
+            }
+        }
+
+        System.out.println(new Developer("Pablo", List.of("Java", "Kotlin")));
+
+        /* RULE:
+        The compiler will not insert a constructor if you define
+        one with the same list of parameters in the same order.
+         */
+    }
+
+    @Test
+    void recordsCompactConstructor() {
+        //Compact constructors does not need to define all the fields
+        record Developer(String name, List<String> skills) {
+            Developer {
+                if(skills == null) skills = new ArrayList<>();
+                if(name == null) name = "noname";
+
+                name = name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
+
+                //Java will execute full constructor after this compact constructor
+            }
+        }
+
+        var miguel = new Developer("miguel", List.of("Java", "Python"));
+        System.out.println(miguel);
+
+        assertThat(miguel.name()).isEqualTo("Miguel");
+    }
+
+    @Test
+    void recordsCompactConstructorMidifyingFields() {
+        record Person(String name, String surname, int age) {
+            Person {
+                //Does it compile?
+                //this.name = name.toUpperCase();
+            }
+        }
+    }
+
+    @Test
+    void recordsOverloadedConstructors() {
+        record Person(String name, String surname, int age) {
+            public Person(String firstName, String lastName, String surename, int age) {
+                //First line must be a call to another constructor
+                this("%s %s".formatted(firstName, lastName), surename, age);
+
+                //Do these sentences compile?
+                // age = 20;
+                // this.age = 20;
+            }
+        }
+    }
+
+    @Test
+    void recordsOverloadingMethods() {
+        record Person(String name, String surname, int age) {
+            @Override public String toString() { return name; }
+            @Override public int age() {
+                System.out.println("Getting the age!");
+                return age;
+            }
+        }
+
+        System.out.println(new Person("María", "García", 35));
+    }
+
+    @Test
+    void recordsOtherFields() {
+        record Person(String name, String surname, int age) {
+            //Do these fields declaration compile?
+
+            //public String nick;
+            //private int score;
+            //public static String type;
+        }
+
+        System.out.println(new Person("María", "García", 35));
     }
 }
 
