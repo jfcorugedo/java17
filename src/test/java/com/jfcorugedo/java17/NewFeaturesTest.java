@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -435,8 +435,10 @@ public class NewFeaturesTest {
 
 
     /** Numeric literals **/
+    @Test
     void numericLiteralsWithUnderscores() {
         int million = 1_000_000;
+        System.out.println(million);
 
         //Do these examples compile?
 
@@ -448,7 +450,8 @@ public class NewFeaturesTest {
 
         //double annoying = 1_00_0.0_0;
 
-        //double reallyUgly = 1_____________2;
+        double reallyUgly = 1_____________2;
+        System.out.println(reallyUgly);
 
     }
 
@@ -565,6 +568,9 @@ public class NewFeaturesTest {
                 // this.age = 20;
             }
         }
+
+        new Person("name", "surname", 41);
+        new Person("firstName", "lastName", "surname", 41);
     }
 
     @Test
@@ -574,6 +580,9 @@ public class NewFeaturesTest {
             @Override public int age() {
                 System.out.println("Getting the age!");
                 return age;
+            }
+            public String fullName() {
+                return "%s %s".formatted(name, surname);
             }
         }
 
@@ -640,6 +649,7 @@ public class NewFeaturesTest {
 
         if(number instanceof Integer age && age.compareTo(18) < 0) {
             System.out.println("This user is a minor!");
+            System.out.println(age);
         }
 
         //Do these statements compile?
