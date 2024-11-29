@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -685,6 +686,18 @@ public class NewFeaturesTest {
         }
         age.compareTo(10);
         */
+    }
+
+    /* Bonus track: String.format to "".formatted */
+    @Test
+    void stringFormatted() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 1, 1, 1, 1);
+
+        String formattedDate = "%1$td/%1$tm/%1$tY %1$tH:%1$tM".formatted(dateTime);
+
+        System.out.println(formattedDate);
+
+        assertThat(formattedDate).isEqualTo("01/01/2024 01:01");
     }
 }
 
